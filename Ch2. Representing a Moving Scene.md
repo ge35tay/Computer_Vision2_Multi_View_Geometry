@@ -34,12 +34,7 @@ $\vee:so(3) \rightarrow \mathbb R^3$
 
 ### 1.3 Rigid body motion
 
-A rigid body motion is a family of maps:\left(
- \begin{matrix}
-   R^T  & -R^TT  \\
-   0 & 1\\
-  \end{matrix} 
-\right)
+A rigid body motion is a family of maps:
 $$
 g_t : \mathbb R^3 \rightarrow \mathbb R^3; X \rightarrow g_t(X), t\in[0, T]
 $$
@@ -60,14 +55,11 @@ Scalar and cross product of these vectors are preserved:
 $$
 r_i^Tr_j = g_t(e_i)^T g_t(e_j) = e_i^Te_j = \delta_{ij}, \quad \quad r_1 \times r_2 = r_3
 $$
-we can see that the rotation matrix is a orthogon\left(
- \begin{matrix}
-   R^T  & -R^TT  \\
-   0 & 1\\
-  \end{matrix} 
-\right)al matrix, and the det(R) = 1. 
+we can see that the rotation matrix is a orthogonal matrix, and the det(R) = 1. 
 
-### 1.4 Exponential Coordinates of Rotation
+## 2. Lie Group SO(3) and SE(3)
+
+### 2.1 Exponential Coordinates of Rotation
 
 > https://www.bilibili.com/video/BV1a3411A7oT?spm_id_from=333.337.search-card.all.click
 
@@ -95,14 +87,9 @@ $$
 
 So we can see the effect of any infinitesimal rotation $R \in SO(3)$ can be approximated by an element from the space of skew-symmetric matrices, which represents tangent space of rotation vector. The rotation group $SO(3)$ is called a **Lie group**, the space $so(3)$ is called its **Lie algebra**. 
 
-> \left(
->  \begin{matrix}
->    R^T  & -R^TT  \\
->    0 & 1\\
->   \end{matrix} 
-> \right)Definition:  a Lie group is a smooth group that is also a group. such that the group operations multiplication and inversion are smooth maps.
->
-> **the Lie Algebra $so(3)$ is the tangent space at the identity element of the rotation group $SO(3)$**
+> Definition:  a Lie group is a smooth group that is also a group. such that the group operations multiplication and inversion are smooth maps.
+>  
+>    **the Lie Algebra $so(3)$ is the tangent space at the identity element of the rotation group $SO(3)$**
 
 <img src="Ch2.%20Representing%20a%20Moving%20Scene.assets/Lie_Group_Visualization.png" style="zoom:50%;" /> 
 
@@ -110,7 +97,7 @@ manifold means that it can be infinitely deriviated on every polint,  non-smooth
 
 For a certain element there exists only one tangent space for it.
 
-### 1.5 The Exponential Map
+### 2.2 The Exponential Map
 
 The differential equation system:
 $$
@@ -130,7 +117,7 @@ $$
 \exp : so(3) \rightarrow SO(3); \hat w \rightarrow e^{\hat w} 
 $$
 
-### 1.6 The logarithm of SO(3)
+### 2.3 The logarithm of SO(3)
 
 A mapping from Lie Group to Lie Algebra $\hat w = log(R)$.
 
@@ -156,7 +143,7 @@ $$
 
 <img src="Ch2.%20Representing%20a%20Moving%20Scene.assets/rod2.jpeg" alt="rod2" style="zoom:25%;" />
 
-### 1.7 Representation of Rigid body motions SE(3)
+### 2.4 Representation of Rigid body motions SE(3)
 
 $$
 SE(3) = \left\{ g = (R, T) | R \in SO(3), T \in \mathbb R^3 \right\}
@@ -172,7 +159,7 @@ SE(3) = \left\{ g = \left(
 \right) | R \in SO(3), T \in \mathbb R^3 \right\} \subset \mathbb R^4
 $$
 
-### 1.8 Lie algebra of Lie Group SE(3)
+### 2.5 Lie algebra of Lie Group SE(3)
 
 for rigid body transformation:
 $$
@@ -221,7 +208,12 @@ $$
 $$
 so the $4 \times 4$ matrix $\hat \xi$ can be viewed as a tangent vector along the curve $g(t)$, $\hat \xi$ is called a ==twist==
 
-so the set of all twists forms the lie algebra of the Lie Group $SE(3)$
+The set of all twists forms the tangent space which is Lie algebra  $se(3) = \left\{ \hat g = \left(
+ \begin{matrix}
+   \hat w & v  \\
+   0 & 0\\
+  \end{matrix} 
+\right) | \hat w \in so(3), v \in \mathbb R^3 \right\} \sub \mathbb R^{4 \times4}$ of the Lie Group $SE(3)$
 $$
 \hat \xi = \left(
  \begin{matrix}
@@ -279,3 +271,119 @@ e^{\hat \xi t}= \left(
   \end{matrix} 
 \right)
 $$
+This defines a transformation ==exponential mapping==from the Lie algebra to Lie group $SE(3)$ 
+$$
+\exp : se(3) \rightarrow SE(3); \quad \hat \xi \rightarrow e^{\hat \xi}
+$$
+The elements $\hat \xi \in se(3)$ are called the exponential coordinates for SE(3)  
+
+**conversely: For every** $g \in SE(3)$ **there exists twist coordinates** $\xi = (v, w) \in \mathbb R^6$ **such that** $g  = exp(\hat \xi)$
+
+## 3. Representing the motion of camera
+
+We use a rigid body transformation 
+$$
+g(t) =  \left(
+ \begin{matrix}
+   R & T  \\
+   0 & 1\\
+  \end{matrix} 
+\right)  \in SE(3)
+$$
+to represent the motion from a fixed world frame to the camera frame at time t.
+
+
+
+**In order to reduce the DOF, we assume that at t= 0 the camera frame coincides with the world frame** . i.e $ g(0) = I$ , We can present any point in world coordinate at time t with:
+$$
+X(t)  = R(t)X_0 + T(t)
+$$
+or in homogeneous representation:
+$$
+X(t) = g(t)X(0)
+$$
+
+### 3.1 Concatenation of Motions over Frames
+
+We can concatenate the motion from t1 to t3 as:
+$$
+X(t_3) = g(t_3, t_2)X(t_2) = g(t_3, t_2)g(t_2, t_1)X(t_1) = g(t_3, t_1)X(t_1)
+$$
+Similarly we have:
+$$
+X(t_1) = g(t_1, t_2)X(t_2) = g(t_1, t_2)g(t_2, t_1)X(t_1) \quad  \quad inv(g(t_2, t_1)) = g(t_1, t_2)
+$$
+
+
+As for the velocity
+$$
+\dot X(t) = \dot g(t) X_0 = \dot g(t) g^{-1}(t)X(t)
+$$
+Introducing the ==twist coordniates==:
+$$
+\hat V(t) = \dot g(t) g^{-1}(t) = \left(
+ \begin{matrix}
+   \hat w & v  \\
+   0 & 0\\
+  \end{matrix} 
+\right) \in se(3)
+$$
+we get the expression:
+$$
+\dot X(t) = \hat V(t) X(t)
+$$
+In simple 3D coordinates this gives:
+$$
+\dot X(t) = \hat w(t) X(t) + v(t)
+$$
+
+### 3.2 Transfer between Frames: The Adjoint Map
+
+Suppose that a viewer in another frame A is displaced relative to the current frame by a transformation $g_{xy}$ :  $Y = g_{xy}X(t)$
+$$
+\dot Y(t) = g_{xy} \dot X(t) = g_{xy} \hat V(t)X(t)  = g_{xy} \hat V g^{-1}_{xy} Y(t)
+$$
+This shows that the relative velocity of points observed from camera frame A is represented by the twist 
+$$
+\hat V_y = g_{xy} \hat V g^{-1}_{xy} = ad_{g_{xy}}(\hat V)
+$$
+==Also call the adjoint map se(3)==
+$$
+ad_g: se(3) \rightarrow se(3): \hat \xi \rightarrow g\hat \xi g^{-1}
+$$
+![img](Ch2.%20Representing%20a%20Moving%20Scene.assets/LieSummary.jpg)
+
+
+
+
+
+
+
+### 3.3 Alternative Representations: Euler Angles
+
+Given basis $(\hat w_1, \hat w_2, \hat w_3)$ of the Lie algebra $so(3)$, we can define a mapping from $\mathbb R^3$ to the Lie Group $SO(3)$ by
+$$
+\alpha : (\alpha_1, \alpha_2, \alpha_3) \rightarrow \exp (\alpha_1 \hat w_1 + \alpha_2 \hat w_2 + \alpha_3 \hat w_3)
+$$
+The coordinates $(\alpha_1, \alpha_2, \alpha_3)$ are called ==Lie Cartan coordinates of first kind== relative to the above basis
+
+The ==Lie Cartan coordinates of the second kind== are defined as:
+$$
+\beta: (\beta_1, \beta_2, \beta_3) \rightarrow \exp(\beta_1 \hat w_1)\exp(\beta_2 \hat w_2)\exp(\beta_3 \hat w_3)
+$$
+**Attention the parameters first kind and second are often different**:
+
+because in matrix exponential: 
+$$
+e^{A_{matrix} + B_{matrix}} \neq e^{A_{matrix}} +  e^{B_{matrix}} 
+$$
+
+$$
+\exp (A) = \sum_{n=1}\frac{A^n}{n!}
+$$
+
+For the basis representing rotation around the z-, y-, x-axis
+$$
+w_1 = (0, 0, 1)^T, \quad w_2 = (0, 1, 0)^T, \quad w_3 = (1, 0, 0)^T
+$$
+the coordinates $\beta_1, \beta_2, \beta_3$ are called ==Euler Angles==
